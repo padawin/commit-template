@@ -1,0 +1,18 @@
+#!/bin/bash
+
+COMMIT_FILE="$1"
+if [ -z "$COMMIT_FILE" ]; then
+	echo "COMMIT_FILE required as first parameter"
+	exit 1
+fi
+
+if [ ! -z "`head -n 1 $COMMIT_FILE`" ]; then
+	exit
+fi
+
+# Ignore if we are doing a fixup/squash commit, or amending
+if ps -ocommand= -p $PPID | egrep -q "(--fixup|--amend|--squash)"; then exit 0; fi
+
+exec < /dev/tty
+commit-message $1
+exit $?
