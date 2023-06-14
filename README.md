@@ -21,6 +21,44 @@ make
 Once compiled, move `commit-message` in your $PATH and copy
 `prepare-commit-msg` in the `.git/hooks/` directory of your project.
 
+Then create a `.git/commit_template` file in your repository.
+This file must contain the commit format. For example:
+
+```
+{t} {i;Year} - {m}
+```
+
+Will lead to the following when committing:
+
+```
+> git commit
+Select the commit type:
+  1 - code
+  2 - fix
+  3 - chore
+  4 - refactor
+  5 - test
+  6 - build
+  7 - doc
+  8 - tool
+  9 - remove
+ 10 - infra
+ 11 - hint
+(1-12)> 2
+Commit message: Some message
+Year: 1970
+[ABC-585-feat/great-change] fix 1970 - Some message
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+```
+
+The following templates are possible:
+- `{t}`: Commit type (code, fix, chore, refactor...)
+- `{p}`: Relevant packages (affected directories)
+- `{n}`: Ticket number (in the `ABC-123` format)
+- `{m}`: Commit message
+- `{i;some prompt}`: Integer
+- `{s;some prompt}`: Arbitrary string
+
 ## Features
 
 - Provides commit type
@@ -44,11 +82,10 @@ Select the commit type:
   5 - test
   6 - build
   7 - doc
-  8 - nit
-  9 - tool
- 10 - remove
- 11 - infra
- 12 - hint
+  8 - tool
+  9 - remove
+ 10 - infra
+ 11 - hint
 (1-12)> 2
 Jira ticket ABC-585 found, use it?
 (yes/no)> no
