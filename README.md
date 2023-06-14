@@ -44,9 +44,9 @@ Select the commit type:
   9 - remove
  10 - infra
  11 - hint
-(1-12)> 2
-Commit message: Some message
+(1-11)> 2
 Year: 1970
+Commit message: Some message
 [ABC-585-feat/great-change] fix 1970 - Some message
  1 file changed, 1 insertion(+), 1 deletion(-)
 ```
@@ -86,7 +86,7 @@ Select the commit type:
   9 - remove
  10 - infra
  11 - hint
-(1-12)> 2
+(1-11)> 2
 Jira ticket ABC-585 found, use it?
 (yes/no)> no
 Commit message: Some message
