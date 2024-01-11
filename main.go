@@ -153,7 +153,7 @@ func promptInt(prompt string) (string, error) {
 }
 
 func promptString(prompt string) (string, error) {
-	prompt = strings.TrimPrefix(prompt, "; ")
+	prompt = strings.TrimPrefix(prompt, ";")
 	return promptMessage(prompt + ":")
 }
 
