@@ -61,7 +61,6 @@ func NewCommitMessage(format string) (string, error) {
 	}
 	format = messagePlaceholderRegex.ReplaceAllString(format, "%s")
 	message := fmt.Sprintf(format, components...)
-	message = strings.Join(strings.Fields(message), " ")
 	return message, nil
 }
 
@@ -118,21 +117,12 @@ func getCommitTemplate() (string, error) {
 		templateFile = strings.TrimSpace(string(stdout)) + "/.git/commit_template"
 	}
 
-	file, err := os.Open(templateFile)
+	content, err := os.ReadFile(templateFile)
 	if err != nil {
 		return defaultCommitTemplate, nil
 	}
-	defer file.Close()
 
-	scanner := bufio.NewScanner(file)
-	// We are only interested in the first line
-	scanner.Scan()
-	template := scanner.Text()
-	if template == "" {
-		return defaultCommitTemplate, nil
-	}
-
-	return template, nil
+	return string(content), nil
 }
 
 func writeMessageToFile(f *os.File, message string) error {
