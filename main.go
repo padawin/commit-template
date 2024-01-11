@@ -48,7 +48,7 @@ func NewCommitMessage(format string) (string, error) {
 		return "", fmt.Errorf("no template found in commit message format")
 	}
 	components := []interface{}{}
-	for i, _ := range parts {
+	for i := range parts {
 		if componentCb, found := componentCbs[parts[i][1]]; !found {
 			return "", fmt.Errorf("component %v not found", parts[i])
 		} else {
