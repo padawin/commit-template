@@ -48,7 +48,7 @@ func NewCommitMessage(format string) (string, error) {
 		return "", fmt.Errorf("no template found in commit message format")
 	}
 	components := []interface{}{}
-	for i, _ := range parts {
+	for i := range parts {
 		if componentCb, found := componentCbs[parts[i][1]]; !found {
 			return "", fmt.Errorf("component %v not found", parts[i])
 		} else {
@@ -61,7 +61,6 @@ func NewCommitMessage(format string) (string, error) {
 	}
 	format = messagePlaceholderRegex.ReplaceAllString(format, "%s")
 	message := fmt.Sprintf(format, components...)
-	message = strings.Join(strings.Fields(message), " ")
 	return message, nil
 }
 
@@ -105,29 +104,25 @@ func getCommitFileFromArgs() (*os.File, error) {
 }
 
 func getCommitTemplate() (string, error) {
-	app := "git rev-parse --show-toplevel"
-	cmd := exec.Command("bash", "-c", app)
-	stdout, err := cmd.Output()
-	if err != nil {
-		return "", fmt.Errorf("error while reading modified files: %v", err)
+	var templateFile string
+	if len(os.Args) == 3 {
+		templateFile = os.Args[2]
+	} else {
+		app := "git rev-parse --show-toplevel"
+		cmd := exec.Command("bash", "-c", app)
+		stdout, err := cmd.Output()
+		if err != nil {
+			return "", fmt.Errorf("error while reading modified files: %v", err)
+		}
+		templateFile = strings.TrimSpace(string(stdout)) + "/.git/commit_template"
 	}
-	templateFile := strings.TrimSpace(string(stdout)) + "/.git/commit_template"
 
-	file, err := os.Open(templateFile)
+	content, err := os.ReadFile(templateFile)
 	if err != nil {
 		return defaultCommitTemplate, nil
 	}
-	defer file.Close()
 
-	scanner := bufio.NewScanner(file)
-	// We are only interested in the first line
-	scanner.Scan()
-	template := scanner.Text()
-	if template == "" {
-		return defaultCommitTemplate, nil
-	}
-
-	return template, nil
+	return string(content), nil
 }
 
 func writeMessageToFile(f *os.File, message string) error {
@@ -148,7 +143,7 @@ func promptInt(prompt string) (string, error) {
 }
 
 func promptString(prompt string) (string, error) {
-	prompt = strings.TrimPrefix(prompt, "; ")
+	prompt = strings.TrimPrefix(prompt, ";")
 	return promptMessage(prompt + ":")
 }
 
