@@ -105,13 +105,18 @@ func getCommitFileFromArgs() (*os.File, error) {
 }
 
 func getCommitTemplate() (string, error) {
-	app := "git rev-parse --show-toplevel"
-	cmd := exec.Command("bash", "-c", app)
-	stdout, err := cmd.Output()
-	if err != nil {
-		return "", fmt.Errorf("error while reading modified files: %v", err)
+	var templateFile string
+	if len(os.Args) == 3 {
+		templateFile = os.Args[2]
+	} else {
+		app := "git rev-parse --show-toplevel"
+		cmd := exec.Command("bash", "-c", app)
+		stdout, err := cmd.Output()
+		if err != nil {
+			return "", fmt.Errorf("error while reading modified files: %v", err)
+		}
+		templateFile = strings.TrimSpace(string(stdout)) + "/.git/commit_template"
 	}
-	templateFile := strings.TrimSpace(string(stdout)) + "/.git/commit_template"
 
 	file, err := os.Open(templateFile)
 	if err != nil {
